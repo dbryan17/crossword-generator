@@ -21,10 +21,11 @@ lets first consider only for a set number of letters
 - this way we will place words at a time instead of leters
 - can have a seperate hash table, or just do look ups on the fly, or have this hash table in a hash table or sorted, so that if "b" is the most common starting letter, it will be used first
 
-3. simple array with supplemental map for commonness
+3. array
 
 - don't think this is the way to go
 - could just have all the words in a sorted array by commonness
+- or could sort alphabetically aaaa first, to zzzz and so on, then have a supplemential map for commonness
 - most memory effiecent, but very time consuiming to go through all the array and look for words that start with say "bl"
 
 ## general
