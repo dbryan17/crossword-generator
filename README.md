@@ -12,6 +12,7 @@ lets first consider only for a set number of letters
 - blank root node, then all the starting letters on next tier, then two letter pairs, then three, then the full words
 - organized left to right by commonness, so if c is the most common starting letter, c will be furtherst left off root node, and so on
 - doing it this way we can place one letter at a time
+- this way it isn't really sorted by how popular the word is, more so how common the starting letters are, then by popularitiy, or could decide this... figure out
 - figure out time complexity
 
 2. hash table
@@ -34,3 +35,4 @@ lets first consider only for a set number of letters
 - consider caching or memomizing lookup results
 - certainly backtracking
 - can later make it more complex, like looking ahead say for the second word across
+- could maybe go through this dataset (orig.csv) which has a lot of fake words (looks like they built it up from internet searches) and compare each one agianst the actauly dictionary to get only real words with commonness

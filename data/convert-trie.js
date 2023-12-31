@@ -37,6 +37,21 @@
 const fs = require("fs");
 const csv = require("csv-parser");
 
+const dictLength = 140000;
+
 const wordsArr = [];
 
-const dictLength = 140000;
+fs.createReadStream("orig.csv")
+  .pipe(csv())
+  .on("data", (row) => {
+    wordsArr.push(row.word);
+  })
+  .on("end", () => {
+    // now, we have every word loaded in in order of commonness
+    const js = `const words = ${JSON.stringify(wordsArr)};`;
+    fs.writeFile("wordArr.js", js, (err) => {
+      if (err) {
+        console.log("an error occured writing the js:\n", err);
+      }
+    });
+  });
