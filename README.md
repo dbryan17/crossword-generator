@@ -12,7 +12,7 @@ lets first consider only for a set number of letters
 - blank root node, then all the starting letters on next tier, then two letter pairs, then three, then the full words
 - organized left to right by commonness, so if c is the most common starting letter, c will be furtherst left off root node, and so on
 - doing it this way we can place one letter at a time
-- this way it isn't really sorted by how popular the word is, more so how common the starting letters are, then by popularitiy, or could decide this... figure out
+- this way it isn't really sorted by how popular the word is, more so how common the starting letters are, then by popularitiy, or could decide this... figure out. It might be nice, its almost somewhat random now, but sort of in order close enough
 - figure out time complexity
 
 2. hash table
@@ -36,3 +36,5 @@ lets first consider only for a set number of letters
 - certainly backtracking
 - can later make it more complex, like looking ahead say for the second word across
 - could maybe go through this dataset (orig.csv) which has a lot of fake words (looks like they built it up from internet searches) and compare each one agianst the actauly dictionary to get only real words with commonness
+- important to note that trie and hash table will work well when we are filling in the ends of words from the starts. It will be much harder if we have a middle letter. Important to note when the user could but in anything. It is possible to go to that depth in the tree, then getting that letter, and seeing what is above it, pick the one with the largest tree below it
+- I think what we want is fist organized by most occuring, then by commonness.

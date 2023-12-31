@@ -1,45 +1,16 @@
 // takes in data csv, and converts to javascript file containing data strucutre
 // Go through all the words in the dictionary
-/* 
-[js]var trie = {
-    b: {
-        a: {
-            r: {
-                end: true,
-                s: {
-                    end: true
-                }
-            }
-        }
-    },
-    f: {
-        o: {
-            o: {
-                end: true
-            }
-        }
-    },
-    r: {
-        a: {
-            t: {
-                end: true,
-                e: {
-                    end: true
-                }
-            }
-        }
-    }
-};
-*/ // - something like that https://johnresig.com/blog/javascript-trie-performance-analysis/
+// - something like that https://johnresig.com/blog/javascript-trie-performance-analysis/
 // this is the initial somewhat nieve approach... see how fast it is, then try to implement the other more complicated data strcutres in blog post
 
 // all four letter words to start
 const fs = require("fs");
 const csv = require("csv-parser");
 
-const dictLength = 140000;
+const dictLength = 100000;
+const wordLength = 4;
 
-const wordsArr = [];
+let wordsArr = [];
 
 fs.createReadStream("orig.csv")
   .pipe(csv())
@@ -48,10 +19,34 @@ fs.createReadStream("orig.csv")
   })
   .on("end", () => {
     // now, we have every word loaded in in order of commonness
-    const js = `const words = ${JSON.stringify(wordsArr)};`;
-    fs.writeFile("wordArr.js", js, (err) => {
+    wordsArr = wordsArr.slice(0, dictLength);
+    let trie = generateTrie(wordsArr, wordLength);
+
+    // ending data structure
+    const js = `let trie = ${JSON.stringify(trie)};`;
+    fs.writeFile("trie.js", js, (err) => {
       if (err) {
         console.log("an error occured writing the js:\n", err);
       }
     });
   });
+
+const generateTrie = (wordsArr, wordLength) => {
+  // first, get rid of all not 4 length words
+  wordsArr = wordsArr.filter((word) => word.length === wordLength);
+  console.log(wordsArr);
+  let trie = wordsArr.reduce((trie, currWord, idx) => {
+    // trie is being accumulated
+    let currTrie = trie;
+    currWord.split("").forEach((letter, idx) => {
+      if (!(letter in currTrie)) {
+        currTrie[letter] = {};
+      } else {
+        // could maybe here incremenent some commonness value
+      }
+      currTrie = currTrie[letter];
+    });
+    return trie;
+  }, {});
+  return trie;
+};
