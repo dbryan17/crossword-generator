@@ -34,7 +34,6 @@ fs.createReadStream("orig.csv")
 const generateTrie = (wordsArr, wordLength) => {
   // first, get rid of all not 4 length words
   wordsArr = wordsArr.filter((word) => word.length === wordLength);
-  console.log(wordsArr);
   let trie = wordsArr.reduce((trie, currWord, idx) => {
     // trie is being accumulated
     let currTrie = trie;
