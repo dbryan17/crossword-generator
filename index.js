@@ -34,6 +34,7 @@ const createCw = (cw) => {
 
       if (needToBracktrack) {
         console.log("need to backtrack");
+        return;
         // bactrack
         // if it is at zero, back on row, otherwise, go back on column
       } else {
@@ -75,6 +76,7 @@ const checkIfPossible = (cw) => {
   // actualyl for now, just focus on x by ys
   // go through "longest one" for now the first one
   for (let colIdx = 0; colIdx < cw[0].length; colIdx++) {
+    currTrie = trie;
     for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
       let letter = cw[rowIdx][colIdx];
       if (letter == "") {
@@ -107,7 +109,7 @@ xxxxxx
   }
 };
 
-cw = [
+let cw = [
   ["", "", "", ""],
   ["", "", "", ""],
   ["", "", "", ""],
