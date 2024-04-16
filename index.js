@@ -4,6 +4,23 @@
 // now for generating the crossword
 // could also make it a graph...
 
+function shuffle(array) {
+  let currentIndex = array.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    let randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+}
+
 // TODO think I am editing these vars in place, so don't need to pass anything but row and col
 const createCw = (cw, row, col, trie) => {
   if (row === cw.length) {
@@ -20,6 +37,7 @@ const createCw = (cw, row, col, trie) => {
   let currTrie = trie;
   // current possible letters
   let currTopLevel = Object.keys(currTrie);
+  shuffle(currTopLevel);
 
   // go through poss letters
   for (let keyIdx = 0; keyIdx < currTopLevel.length; keyIdx++) {
@@ -50,12 +68,12 @@ const createCw = (cw, row, col, trie) => {
 // could maybe return something if it
 // false - not possible, 0 - filled in and done, 1 - still possible, not filled in
 const checkIfPossible = (cw) => {
-  let currTrie = smalltrie;
+  let currTrie = trie;
   let filled = true;
 
   // rows
   for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
-    let currTrie = smalltrie;
+    let currTrie = trie;
     for (let colIdx = 0; colIdx < cw[rowIdx].length; colIdx++) {
       let letter = cw[rowIdx][colIdx];
       // check if row is still possible
@@ -73,11 +91,11 @@ const checkIfPossible = (cw) => {
     }
   }
   // cols
-  currTrie = smalltrie;
+  currTrie = trie;
   // actualyl for now, just focus on x by ys
   // go through "longest one" for now the first one
   for (let colIdx = 0; colIdx < cw[0].length; colIdx++) {
-    currTrie = smalltrie;
+    currTrie = trie;
     for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
       let letter = cw[rowIdx][colIdx];
       if (letter == "") {
@@ -107,11 +125,11 @@ let cw = [
   ["", "", "", ""],
 ];
 
-const origTrie = smalltrie;
+const origTrie = trie;
 
 setTimeout(() => {
   console.log(cw);
-  newCw = createCw(cw, 0, 0, smalltrie);
+  newCw = createCw(cw, 0, 0, trie);
   console.log(cw);
 }, 2000);
 
