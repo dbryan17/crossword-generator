@@ -1,60 +1,61 @@
+// const {trie} = require("./data/trie")
+// const {smalltrie} = require("./data/smalltrie")
+
 // now for generating the crossword
 // could also make it a graph...
 
-// need to make this recurisve
+// TODO think I am editing these vars in place, so don't need to pass anything but row and col
+const createCw = (cw, row, col, trie) => {
+  if (row === cw.length) {
+    // found a poss solution
+    return true;
+  }
 
-const createCw = (cw) => {
+  // get next row, checks if we are at the end of a row
+  let nextRow = col == cw[row].length - 1 ? row + 1 : row;
+  // same for col
+  let nextCol = col == cw[row].length - 1 ? 0 : col + 1;
+
+  // TODO not sure I need this
   let currTrie = trie;
-  let needToBracktrack = true;
+  // current possible letters
+  let currTopLevel = Object.keys(currTrie);
 
-  for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
-    currTrie = trie;
-    for (let colIdx = 0; colIdx < cw[rowIdx].length; colIdx++) {
-      let currTopLevel = Object.keys(currTrie);
-      let pickedLetter = "";
-      for (let keyIdx = 0; keyIdx < currTopLevel.length; keyIdx++) {
-        cw[rowIdx][colIdx] = currTopLevel[keyIdx];
-        let check = checkIfPossible(cw);
-        if (check === 0) {
-          // done
-          return cw;
-          // not done but possible
-        } else if (check === 1) {
-          needToBracktrack = false;
-          pickedLetter = currTopLevel[keyIdx];
-          // want to break out of loop
-          break;
-          // false - not possible
-        } else {
-          needToBracktrack = true;
-          // want to continue
-        }
-        // need to backtrack if went through everything
-      }
+  // go through poss letters
+  for (let keyIdx = 0; keyIdx < currTopLevel.length; keyIdx++) {
+    let pickedLetter = currTopLevel[keyIdx];
+    cw[row][col] = pickedLetter;
 
-      if (needToBracktrack) {
-        console.log("need to backtrack");
-        return;
-        // bactrack
-        // if it is at zero, back on row, otherwise, go back on column
-      } else {
-        currTrie = currTrie[pickedLetter];
+    if (checkIfPossible(cw)) {
+      // is still possible, continue
+      // want the original trie if the cycle is start of a row
+      if (
+        createCw(
+          cw,
+          nextRow,
+          nextCol,
+          nextCol === 0 ? origTrie : currTrie[pickedLetter]
+        )
+      ) {
+        return true;
       }
     }
   }
-  // if we get here, not possible
+  // went through every letter and they all failed, here or in recursion
+  // so rest letter and backtrack
+  cw[row][col] = "";
   return false;
 };
 
 // could maybe return something if it
 // false - not possible, 0 - filled in and done, 1 - still possible, not filled in
 const checkIfPossible = (cw) => {
-  let currTrie = trie;
+  let currTrie = smalltrie;
   let filled = true;
 
   // rows
   for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
-    let currTrie = trie;
+    let currTrie = smalltrie;
     for (let colIdx = 0; colIdx < cw[rowIdx].length; colIdx++) {
       let letter = cw[rowIdx][colIdx];
       // check if row is still possible
@@ -72,11 +73,11 @@ const checkIfPossible = (cw) => {
     }
   }
   // cols
-  currTrie = trie;
+  currTrie = smalltrie;
   // actualyl for now, just focus on x by ys
   // go through "longest one" for now the first one
   for (let colIdx = 0; colIdx < cw[0].length; colIdx++) {
-    currTrie = trie;
+    currTrie = smalltrie;
     for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
       let letter = cw[rowIdx][colIdx];
       if (letter == "") {
@@ -90,23 +91,13 @@ const checkIfPossible = (cw) => {
     }
   }
 
-  /*
-xxxxxx
-xxxxxx
-xxxxxx
-
-  */
-
-  // for now, say _ is black box
-  // this will account for non square and black boxes
-  // for (let colIdx = 0; colIdx < cw.length; colIdx++) {
-  //   for(let rowIdx = 0; rowIdx < )
-
-  if (filled) {
-    return 0;
-  } else {
-    return 1;
-  }
+  // TODO figure out why this was here
+  return true;
+  // if (filled) {
+  //   return 0;
+  // } else {
+  //   return 1;
+  // }
 };
 
 let cw = [
@@ -115,9 +106,14 @@ let cw = [
   ["", "", "", ""],
   ["", "", "", ""],
 ];
-console.log(cw);
-newCw = createCw(cw);
-console.log(newCw);
+
+const origTrie = smalltrie;
+
+setTimeout(() => {
+  console.log(cw);
+  newCw = createCw(cw, 0, 0, smalltrie);
+  console.log(cw);
+}, 2000);
 
 // function placeWord(grid, row, col, words) {
 //     if (grid is complete) return true;

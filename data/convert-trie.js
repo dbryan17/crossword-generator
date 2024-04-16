@@ -12,7 +12,8 @@ const wordLength = 4;
 
 let wordsArr = [];
 
-fs.createReadStream("orig.csv")
+// change the file to create trie from csv
+fs.createReadStream("smalldict.csv")
   .pipe(csv())
   .on("data", (row) => {
     wordsArr.push(row.word);
@@ -23,8 +24,8 @@ fs.createReadStream("orig.csv")
     let trie = generateTrie(wordsArr, wordLength);
 
     // ending data structure
-    const js = `let trie = ${JSON.stringify(trie)};`;
-    fs.writeFile("trie.js", js, (err) => {
+    const js = `let smalltrie = ${JSON.stringify(trie)};`;
+    fs.writeFile("smalltrie.js", js, (err) => {
       if (err) {
         console.log("an error occured writing the js:\n", err);
       }

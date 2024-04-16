@@ -5068,3 +5068,5 @@ let trie = {
     a: { z: { i: {} } },
   },
 };
+
+module.exports = {trie}
