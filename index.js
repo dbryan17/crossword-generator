@@ -68,12 +68,12 @@ const createCw = (cw, row, col, trie) => {
 // could maybe return something if it
 // false - not possible, 0 - filled in and done, 1 - still possible, not filled in
 const checkIfPossible = (cw) => {
-  let currTrie = trie;
+  let currTrie = commontrie;
   let filled = true;
 
   // rows
   for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
-    let currTrie = trie;
+    let currTrie = commontrie;
     for (let colIdx = 0; colIdx < cw[rowIdx].length; colIdx++) {
       let letter = cw[rowIdx][colIdx];
       // check if row is still possible
@@ -91,11 +91,11 @@ const checkIfPossible = (cw) => {
     }
   }
   // cols
-  currTrie = trie;
+  currTrie = commontrie;
   // actualyl for now, just focus on x by ys
   // go through "longest one" for now the first one
   for (let colIdx = 0; colIdx < cw[0].length; colIdx++) {
-    currTrie = trie;
+    currTrie = commontrie;
     for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
       let letter = cw[rowIdx][colIdx];
       if (letter == "") {
@@ -125,11 +125,11 @@ let cw = [
   ["", "", "", ""],
 ];
 
-const origTrie = trie;
+const origTrie = commontrie;
 
 setTimeout(() => {
   console.log(cw);
-  newCw = createCw(cw, 0, 0, trie);
+  newCw = createCw(cw, 0, 0, commontrie);
   console.log(cw);
 }, 2000);
 
