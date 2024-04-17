@@ -7,25 +7,26 @@
 const fs = require("fs");
 const csv = require("csv-parser");
 
-const dictLength = 100000;
+// const dictLength = 100000;
 const wordLength = 4;
 
 let wordsArr = [];
 
 // change the file to create trie from csv
-fs.createReadStream("smalldict.csv")
+fs.createReadStream("commonwords.csv")
   .pipe(csv())
   .on("data", (row) => {
     wordsArr.push(row.word);
   })
   .on("end", () => {
+    console.log(wordsArr);
     // now, we have every word loaded in in order of commonness
-    wordsArr = wordsArr.slice(0, dictLength);
+    // wordsArr = wordsArr.slice(0, dictLength);
     let trie = generateTrie(wordsArr, wordLength);
 
     // ending data structure
-    const js = `let smalltrie = ${JSON.stringify(trie)};`;
-    fs.writeFile("smalltrie.js", js, (err) => {
+    const js = `let commontrie = ${JSON.stringify(trie)};`;
+    fs.writeFile("commontrie.js", js, (err) => {
       if (err) {
         console.log("an error occured writing the js:\n", err);
       }
