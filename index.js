@@ -44,9 +44,10 @@ const createCw = (cw, row, col, trie) => {
     let pickedLetter = currTopLevel[keyIdx];
     cw[row][col] = pickedLetter;
 
-    if (checkIfPossible(cw)) {
+    if (checkIfPossible(cw) && (nextCol === 0 ? checkIfDuplicates(cw) : true)) {
       // is still possible, continue
       // want the original trie if the cycle is start of a row
+
       if (
         createCw(
           cw,
@@ -61,8 +62,44 @@ const createCw = (cw, row, col, trie) => {
   }
   // went through every letter and they all failed, here or in recursion
   // so rest letter and backtrack
-  cw[row][col] = "";
+  cw[row][col] = ",";
   return false;
+};
+
+// returns true if there are no duplicate words, false otherwise
+const checkIfDuplicates = (cw) => {
+  // need to go through rows and cols, get all words, and see if there are any duplicate full words
+  wordsObj = cw.reduce(
+    (acc, row, rowIdx) => {
+      let rowWord = "";
+      row.forEach((letter, colIdx) => {
+        rowWord += letter;
+        // if it col idx partial alreadly exists, will be always except first row
+        if (acc.colPartials[colIdx]) {
+          // add
+          acc.colPartials[colIdx] += letter;
+        } else {
+          // create it
+          acc.colPartials[colIdx] = letter;
+        }
+      });
+      acc.rowWords.push(rowWord);
+      return acc;
+    },
+    { rowWords: [], colPartials: {} }
+  );
+
+  let allWords = Object.values(wordsObj.colPartials).concat(wordsObj.rowWords);
+
+  allWords = allWords.filter((word) => !word.includes(","));
+  let allWordsSet = new Set(allWords);
+
+  if (allWordsSet.size === allWords.length) {
+    // no duplicates
+    return true;
+  } else {
+    return false;
+  }
 };
 
 // could maybe return something if it
@@ -77,7 +114,7 @@ const checkIfPossible = (cw) => {
     for (let colIdx = 0; colIdx < cw[rowIdx].length; colIdx++) {
       let letter = cw[rowIdx][colIdx];
       // check if row is still possible
-      if (letter === "") {
+      if (letter === ",") {
         // the row is considered possible if we reach here
         filled = false;
         break;
@@ -98,7 +135,7 @@ const checkIfPossible = (cw) => {
     currTrie = commontrie;
     for (let rowIdx = 0; rowIdx < cw.length; rowIdx++) {
       let letter = cw[rowIdx][colIdx];
-      if (letter == "") {
+      if (letter == ",") {
         filled = false;
         break;
       }
@@ -119,19 +156,23 @@ const checkIfPossible = (cw) => {
 };
 
 let cw = [
-  ["", "", "", ""],
-  ["", "", "", ""],
-  ["", "", "", ""],
-  ["", "", "", ""],
+  [",", ",", ",", ","],
+  [",", ",", ",", ","],
+  [",", ",", ",", ","],
+  [",", ",", ",", ","],
 ];
 
 const origTrie = commontrie;
 
-setTimeout(() => {
-  console.log(cw);
-  newCw = createCw(cw, 0, 0, commontrie);
-  console.log(cw);
-}, 2000);
+// setTimeout(() => {
+//   console.log(cw);
+//   newCw = createCw(cw, 0, 0, commontrie);
+//   console.log(cw);
+// }, 2000);
+
+console.log(cw);
+newCw = createCw(cw, 0, 0, commontrie);
+console.log(cw);
 
 // function placeWord(grid, row, col, words) {
 //     if (grid is complete) return true;
