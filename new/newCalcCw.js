@@ -31,10 +31,10 @@ const outerCreateCw = (grid, trie) => {
   console.log("starting");
   let cw = [
     [
+      ["_", false],
       [",", false],
       [",", false],
-      [",", false],
-      [",", false],
+      ["_", false],
     ],
     [
       [",", false],
@@ -99,8 +99,8 @@ const createCw = (cw, row, col) => {
   let rowWordTrie = trie[rowWord.length];
   // dont need this
   if (rowWordStartIdx !== col) {
-    for (let i = 0; i < col; i++) {
-      rowWordTrie = rowWordTrie[rowWord[i]];
+    for (let i = rowWordStartIdx; i < col; i++) {
+      rowWordTrie = rowWordTrie[rowWord[i - rowWordStartIdx]];
     }
   }
   // get the rest of the word to filter the trie down to what is possible with the givens left in the word
@@ -125,8 +125,8 @@ const createCw = (cw, row, col) => {
   // this means theres letters before in the word, they will all be letters, need to compute trie
   // TODO don't even need this if statement
   if (colWordStartIdx !== row) {
-    for (let i = 0; i < row; i++) {
-      colWordTrie = colWordTrie[colWord[i]];
+    for (let i = colWordStartIdx; i < row; i++) {
+      colWordTrie = colWordTrie[colWord[i - colWordStartIdx]];
     }
   }
   // same as above
