@@ -45,11 +45,11 @@ const outerCreateCw = (grid, trie) => {
       [",", false],
     ],
     [
-      [",", false],
-      [",", false],
-      [",", false],
-      [",", false],
-      [",", false],
+      ["i", true],
+      ["r", true],
+      ["o", true],
+      ["n", true],
+      ["y", true],
     ],
     [
       [",", false],
