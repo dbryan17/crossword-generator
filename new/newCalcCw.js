@@ -31,16 +31,16 @@ const outerCreateCw = (grid, trie) => {
   console.log("starting");
   let cw = [
     [
+      ["_", false],
       [",", false],
       [",", false],
-      [",", false],
-      [",", false],
+      ["_", false],
     ],
     [
-      ["o", true],
-      ["r", true],
+      ["g", true],
       ["a", true],
-      ["l", true],
+      ["i", true],
+      ["n", true],
     ],
     [
       [",", false],
