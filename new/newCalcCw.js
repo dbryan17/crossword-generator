@@ -19,13 +19,42 @@ function shuffle(array) {
 //////////////////////////////////////////
 //////////////////////////////////////////
 
+// outerCreateCw(null, commontrie);
+
 const outerCreateCw = (grid, trie) => {
   // _ is black square
   // , is empty
   // letters are lettes
   // grid is cw of tuples with letter, isLocked
   // isLocked means user entered so can't change
-  let cw = grid;
+  //let cw = grid;
+  console.log("starting");
+  let cw = [
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+  ];
   createCw(cw, 0, 0, trie);
   return cw;
 };
@@ -67,10 +96,10 @@ const createCw = (cw, row, col) => {
     col,
     true
   );
-  rowWordTrie = trie[rowWord.length];
+  let rowWordTrie = trie[rowWord.length];
   // dont need this
-  if (rowWordStartIdx !== row) {
-    for (let i = 0; i++; i < row) {
+  if (rowWordStartIdx !== col) {
+    for (let i = 0; i < col; i++) {
       rowWordTrie = rowWordTrie[rowWord[i]];
     }
   }
@@ -92,11 +121,11 @@ const createCw = (cw, row, col) => {
     col,
     false
   );
-  colWordTrie = trie[colWord.length];
+  let colWordTrie = trie[colWord.length];
   // this means theres letters before in the word, they will all be letters, need to compute trie
   // TODO don't even need this if statement
-  if (colWordStartIdx !== col) {
-    for (let i = 0; i++; i < col) {
+  if (colWordStartIdx !== row) {
+    for (let i = 0; i < row; i++) {
       colWordTrie = colWordTrie[colWord[i]];
     }
   }
@@ -108,23 +137,28 @@ const createCw = (cw, row, col) => {
   }
   let colTopLevel = Object.keys(colWordTrie);
 
+  let topLevel = colTopLevel.filter((letter) => rowTopLevel.includes(letter));
+
   // to here
-  let allTopLevel = new Set(rowTopLevel.concat(colTopLevel));
+  // let allTopLevel = new Set(rowTopLevel.concat(colTopLevel));
   // if it is an empty set, then it is not possible, need to backtrack
   // todo I don't think this means it is never possible, but it is funky - previously entered things effect the trie - so no
   // think this is right but weird
-  if (allTopLevel.size === 0) {
+  if (topLevel.length === 0) {
     return false;
   }
   // todo shuffle
   // now we have a set of possible letters, can do old normal backtrack fill
-  allTopLevel.forEach((letter) => {
+  // console.log([...allTopLevel]);
+  // let allTopLevelArr = [...allTopLevel];
+  for (let i = 0; i < topLevel.length; i++) {
+    let letter = topLevel[i];
     cw[row][col][0] = letter;
     // todo need to implement check duplicates
     if (createCw(cw, nextRow, nextCol)) {
       return true;
     }
-  });
+  }
 
   cw[row][col][0] = ",";
   return false;
@@ -138,24 +172,24 @@ const getWord = (cw, row, col, isRowWord) => {
   let currWord = cw[row][col][0];
 
   // "above"
-  let i = isRowWord ? row - 1 : col - 1;
+  let i = isRowWord ? col - 1 : row - 1;
   while (i >= 0) {
-    if (cw[isRowWord ? i : row][isRowWord ? col : i][0] === "_") {
+    if (cw[isRowWord ? row : i][isRowWord ? i : col][0] === "_") {
       break;
     }
-    currWord = cw[isRowWord ? i : row][isRowWord ? col : i][0] + currWord;
+    currWord = cw[isRowWord ? row : i][isRowWord ? i : col][0] + currWord;
     i--;
   }
   let startIdx = i + 1;
 
   // "below"
-  i = isRowWord ? row + 1 : col + 1;
+  i = isRowWord ? col + 1 : row + 1;
   // row lengths will all be the same, so could use 0 instead of row
   while (isRowWord ? i < cw[row].length : i < cw.length) {
-    if (cw[isRowWord ? i : row][isRowWord ? col : i][0] === "_") {
+    if (cw[isRowWord ? row : i][isRowWord ? i : col][0] === "_") {
       break;
     }
-    currWord = currWord + cw[isRowWord ? i : row][isRowWord ? col : i][0];
+    currWord = currWord + cw[isRowWord ? row : i][isRowWord ? i : col][0];
     i++;
   }
   let endIdx = i - 1;
@@ -214,19 +248,19 @@ const filterTrie = (currTrie, currWord) => {
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
-const { commontrie } = require("../data/commontrie");
+// const { commontrie } = require("../data/commontrie");
 // let currTrie = commontrie[4];
 // let word = ",,nt";
 // console.log(filterTrie(currTrie, word));
 // console.log(JSON.stringify(currTrie));
-let cw = [
-  [",", ",", ",", ","],
-  [",", ",", ",", ","],
-  [",", ",", ",", ","],
-  [",", ",", ",", ","],
-];
-createCw(cw, 0, 0);
-console.log(cw);
+// let cw = [
+//   [",", ",", ",", ","],
+//   [",", ",", ",", ","],
+//   [",", ",", ",", ","],
+//   [",", ",", ",", ","],
+// ];
+// createCw(cw, 0, 0);
+// console.log(cw);
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
