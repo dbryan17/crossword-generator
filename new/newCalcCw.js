@@ -49,10 +49,10 @@ const outerCreateCw = (grid, trie) => {
       [",", false],
     ],
     [
+      ["_", false],
       [",", false],
       [",", false],
-      [",", false],
-      [",", false],
+      ["_", false],
     ],
   ];
   createCw(cw, 0, 0, trie);
@@ -151,6 +151,7 @@ const createCw = (cw, row, col) => {
   // now we have a set of possible letters, can do old normal backtrack fill
   // console.log([...allTopLevel]);
   // let allTopLevelArr = [...allTopLevel];
+  shuffle(topLevel);
   for (let i = 0; i < topLevel.length; i++) {
     let letter = topLevel[i];
     cw[row][col][0] = letter;
