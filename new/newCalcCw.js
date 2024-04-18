@@ -34,15 +34,11 @@ const outerCreateCw = (grid, trie) => {
       ["_", false],
       [",", false],
       [",", false],
+      [",", false],
       ["_", false],
     ],
     [
-      ["g", true],
-      ["a", true],
-      ["i", true],
-      ["n", true],
-    ],
-    [
+      [",", false],
       [",", false],
       [",", false],
       [",", false],
@@ -53,6 +49,21 @@ const outerCreateCw = (grid, trie) => {
       [",", false],
       [",", false],
       [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      ["_", false],
+      [",", false],
+      [",", false],
+      [",", false],
+      ["_", false],
     ],
   ];
   createCw(cw, 0, 0);
@@ -62,6 +73,7 @@ const outerCreateCw = (grid, trie) => {
 // TODO - I don't think I actually need the locks, can just see if there is already a letter there
 // TODO - also don't think I need to pass around trie anymore because we need to check at beginning of each time
 const createCw = (cw, row, col) => {
+  console.log("step");
   let trie = commontrie;
   // done
   if (row === cw.length) {
@@ -104,7 +116,7 @@ const createCw = (cw, row, col) => {
     }
   }
   // get the rest of the word to filter the trie down to what is possible with the givens left in the word
-  rowWord = rowWord.slice(col);
+  rowWord = rowWord.slice(col - rowWordStartIdx);
   // call the function to filter down the trie
   // dont need this if TODO test
   if (rowWord.length !== 1) {
@@ -130,7 +142,7 @@ const createCw = (cw, row, col) => {
     }
   }
   // same as above
-  colWord = colWord.slice(row);
+  colWord = colWord.slice(row - colWordStartIdx);
   // dont need
   if (colWord.length !== 1) {
     filterTrie(colWordTrie, colWord);
