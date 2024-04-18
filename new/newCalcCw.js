@@ -31,10 +31,16 @@ const outerCreateCw = (grid, trie) => {
   console.log("starting");
   let cw = [
     [
-      ["_", false],
       [",", false],
       [",", false],
-      ["_", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      ["o", true],
+      ["r", true],
+      ["a", true],
+      ["l", true],
     ],
     [
       [",", false],
@@ -47,15 +53,9 @@ const outerCreateCw = (grid, trie) => {
       [",", false],
       [",", false],
       [",", false],
-    ],
-    [
-      ["_", false],
-      [",", false],
-      [",", false],
-      ["_", false],
     ],
   ];
-  createCw(cw, 0, 0, trie);
+  createCw(cw, 0, 0);
   return cw;
 };
 
@@ -76,7 +76,7 @@ const createCw = (cw, row, col) => {
   // if locked letter or black square, nothing to do but continue
   // TODO might have to check if it is all still possible if it is a locked one, but I doubt it
   if (cw[row][col][1] === true || cw[row][col][0] === "_") {
-    if (createCw(cw, nextRow, nextCol, trie)) {
+    if (createCw(cw, nextRow, nextCol)) {
       return true;
     } else {
       // want to backtrack here - skip the rest
@@ -96,7 +96,7 @@ const createCw = (cw, row, col) => {
     col,
     true
   );
-  let rowWordTrie = trie[rowWord.length];
+  let rowWordTrie = JSON.parse(JSON.stringify(trie[rowWord.length]));
   // dont need this
   if (rowWordStartIdx !== col) {
     for (let i = rowWordStartIdx; i < col; i++) {
@@ -104,10 +104,10 @@ const createCw = (cw, row, col) => {
     }
   }
   // get the rest of the word to filter the trie down to what is possible with the givens left in the word
-  rowWord = rowWord.slice(row + 1);
+  rowWord = rowWord.slice(col);
   // call the function to filter down the trie
   // dont need this if TODO test
-  if (rowWord.length !== 0) {
+  if (rowWord.length !== 1) {
     filterTrie(rowWordTrie, rowWord);
     // throw away return??
   }
@@ -121,7 +121,7 @@ const createCw = (cw, row, col) => {
     col,
     false
   );
-  let colWordTrie = trie[colWord.length];
+  let colWordTrie = JSON.parse(JSON.stringify(trie[colWord.length]));
   // this means theres letters before in the word, they will all be letters, need to compute trie
   // TODO don't even need this if statement
   if (colWordStartIdx !== row) {
@@ -130,9 +130,9 @@ const createCw = (cw, row, col) => {
     }
   }
   // same as above
-  colWord = colWord.slice(col + 1);
+  colWord = colWord.slice(row);
   // dont need
-  if (colWord.length !== 0) {
+  if (colWord.length !== 1) {
     filterTrie(colWordTrie, colWord);
   }
   let colTopLevel = Object.keys(colWordTrie);
