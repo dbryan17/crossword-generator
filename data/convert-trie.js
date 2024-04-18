@@ -19,7 +19,6 @@ fs.createReadStream("commonwords.csv")
     wordsArr.push(row.word);
   })
   .on("end", () => {
-    console.log(wordsArr);
     // now, we have every word loaded in in order of commonness
     // wordsArr = wordsArr.slice(0, dictLength);
     let trie = generateTrie(wordsArr, wordLength);
@@ -35,15 +34,19 @@ fs.createReadStream("commonwords.csv")
 
 const generateTrie = (wordsArr, wordLength) => {
   // first, get rid of all not 4 length words
-  wordsArr = wordsArr.filter((word) => word.length === wordLength);
+  // wordsArr = wordsArr.filter((word) => word.length === wordLength);
   let trie = wordsArr.reduce((trie, currWord, idx) => {
+    if (!trie[currWord.length]) {
+      trie[currWord.length] = {};
+    }
     // trie is being accumulated
-    let currTrie = trie;
+    let currTrie = trie[currWord.length];
     currWord.split("").forEach((letter, idx) => {
+      letter = letter.toLowerCase();
       if (!(letter in currTrie)) {
         currTrie[letter] = {};
       } else {
-        // could maybe here incremenent some commonness value
+        // TODO could maybe here incremenent some commonness value
       }
       currTrie = currTrie[letter];
     });

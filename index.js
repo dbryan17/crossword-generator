@@ -2,7 +2,39 @@ document.querySelector("#generateBtn").addEventListener("click", () => {
   let divCont = document.querySelector("#container");
   divCont.innerHTML = ``;
 
-  let cw = outerCreateCw(commontrie);
+  // let grid = [
+  //   ["_", ",", ",", ",", "_"],
+  //   [",", ",", ",", ",", ","],
+
+  // ]
+  let grid = [
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+    [
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+    ],
+  ];
+
+  let cw = outerCreateCw(grid, commontrie);
   console.log(cw);
 
   // const parser = new DOMParser();
