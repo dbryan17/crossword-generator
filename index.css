@@ -1,7 +1,26 @@
-td {
+.cell {
   width: 40px;
   height: 40px;
-  border: 1px solid;
+}
+
+.textContainer {
+  width: 40px;
+  height: 40px;
+}
+
+.input {
+  width: 40px;
+  height: 40px;
+  outline: none;
   text-align: center;
-  font-weight: bold;
+  caret-color: transparent;
+  background-color: "";
+}
+
+#blackSquareBtn.active {
+  box-shadow: 0 2px #666; /* Simulate "pushed down" effect */
+}
+
+#lettersBtn.active {
+  box-shadow: 0 2px #666; /* Simulate "pushed down" effect */
 }

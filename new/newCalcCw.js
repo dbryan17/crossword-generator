@@ -21,6 +21,7 @@ function shuffle(array) {
 
 // outerCreateCw(null, commontrie);
 
+// todo - put other functions inside this so we can have global variables
 const outerCreateCw = (grid, trie) => {
   // _ is black square
   // , is empty
@@ -45,11 +46,11 @@ const outerCreateCw = (grid, trie) => {
       [",", false],
     ],
     [
-      ["i", true],
-      ["r", true],
-      ["o", true],
-      ["n", true],
-      ["y", true],
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
+      [",", false],
     ],
     [
       [",", false],
