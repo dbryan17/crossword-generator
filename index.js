@@ -25,9 +25,6 @@ const generateBoard = (height, width) => {
       // event listners
       input.addEventListener("click", () => {
         if (!isDoneEditing && isBlackSquareSelect) {
-          console.log("clicked");
-          console.log(cell);
-
           if (input.style.backgroundColor) {
             input.style.backgroundColor = "";
           } else {
@@ -96,70 +93,48 @@ document.querySelector("#lockBtn").addEventListener("click", () => {
   isDoneEditing = true;
 });
 
-doccument.querySelector("#fillBtn").addEventListener("click", () => {
+document.querySelector("#fillBtn").addEventListener("click", () => {
+  isDoneEditing = true;
   // need to go through and find all black squares and givens and such and call fcn to autofill
-  document.querySelector("");
+  let grid = Array.from(document.querySelector("#cwTable").childNodes).reduce(
+    (acc, row) => {
+      // get cells
+      let rowArr = [];
+      row.childNodes.forEach((cell) => {
+        let inputEle = cell.querySelector("div.textContainer > input");
+        if (inputEle.style.backgroundColor !== "") {
+          // black square
+          rowArr.push(["_", false]);
+        } else if (inputEle.value !== "") {
+          // locked val
+          rowArr.push([inputEle.value, true]);
+        } else {
+          // blank
+          rowArr.push([",", false]);
+        }
+      });
+      acc.push(rowArr);
+      return acc;
+    },
+    []
+  );
+  console.log(grid);
+  let cw = outerCreateCw(grid, null);
+  // now insert into grid
+  cw.forEach((row, r) => {
+    row.forEach((cell, c) => {
+      // get cell input
+      let cellInput = document.querySelector(
+        `#cell${r.toString()}${c.toString()}`
+      );
+      if (cell[0] !== "_") {
+        cellInput.value = cell[0];
+      }
+    });
+  });
 });
 
 ////////////////////////////
 ////////////////////////////
 ////////////////////////////
 ////////////////////////////
-
-document.querySelector("#generateBtn").addEventListener("click", () => {
-  console.log("(((((");
-  let divCont = document.querySelector("#container");
-  divCont.innerHTML = ``;
-
-  // let grid = [
-  //   ["_", ",", ",", ",", "_"],
-  //   [",", ",", ",", ",", ","],
-
-  // ]
-  let cw = outerCreateCw(grid, commontrie);
-  console.log(cw);
-
-  // const parser = new DOMParser();
-
-  // let cwHtml = parser.parseFromString(
-  //   `
-
-  //   `
-  // )
-  const cwTable = document.createElement("table");
-  const cwRowOne = document.createElement("tr");
-  const cwRowTwo = document.createElement("tr");
-  const cwRowThree = document.createElement("tr");
-  const cwRowFour = document.createElement("tr");
-  cwRowOne.innerHTML = `
-    <td>${cw[0][0]}</td>
-    <td>${cw[0][1]}</td>
-    <td>${cw[0][2]}</td>
-    <td>${cw[0][3]}</td>
-  `;
-  cwRowTwo.innerHTML = `
-    <td>${cw[1][0]}</td>
-    <td>${cw[1][1]}</td>
-    <td>${cw[1][2]}</td>
-    <td>${cw[1][3]}</td>
-  `;
-  cwRowThree.innerHTML = `
-    <td>${cw[2][0]}</td>
-    <td>${cw[2][1]}</td>
-    <td>${cw[2][2]}</td>
-    <td>${cw[2][3]}</td>
-
-  `;
-  cwRowFour.innerHTML = `
-    <td>${cw[3][0]}</td>
-    <td>${cw[3][1]}</td>
-    <td>${cw[3][2]}</td>
-    <td>${cw[3][3]}</td>
-  `;
-  cwTable.appendChild(cwRowOne);
-  cwTable.appendChild(cwRowTwo);
-  cwTable.appendChild(cwRowThree);
-  cwTable.appendChild(cwRowFour);
-
-  divCont.appendChild(cwTable);
-});
