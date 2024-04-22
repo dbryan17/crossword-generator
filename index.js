@@ -104,13 +104,13 @@ document.querySelector("#fillBtn").addEventListener("click", () => {
         let inputEle = cell.querySelector("div.textContainer > input");
         if (inputEle.style.backgroundColor !== "") {
           // black square
-          rowArr.push(["_", false]);
+          rowArr.push("_");
         } else if (inputEle.value !== "") {
           // locked val
-          rowArr.push([inputEle.value, true]);
+          rowArr.push(inputEle.value);
         } else {
           // blank
-          rowArr.push([",", false]);
+          rowArr.push(",");
         }
       });
       acc.push(rowArr);

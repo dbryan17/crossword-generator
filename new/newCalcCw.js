@@ -52,7 +52,7 @@ const createCw = (cw, row, col) => {
 
   // if locked letter or black square, nothing to do but continue
   // TODO might have to check if it is all still possible if it is a locked one, but I doubt it
-  if (cw[row][col][1] === true || cw[row][col][0] === "_") {
+  if (cw[row][col] !== "," || cw[row][col] === "_") {
     if (createCw(cw, nextRow, nextCol)) {
       return true;
     } else {
@@ -131,14 +131,14 @@ const createCw = (cw, row, col) => {
   shuffle(topLevel);
   for (let i = 0; i < topLevel.length; i++) {
     let letter = topLevel[i];
-    cw[row][col][0] = letter;
+    cw[row][col] = letter;
     // todo need to implement check duplicates
     if (createCw(cw, nextRow, nextCol)) {
       return true;
     }
   }
 
-  cw[row][col][0] = ",";
+  cw[row][col] = ",";
   return false;
 };
 
@@ -147,15 +147,15 @@ const createCw = (cw, row, col) => {
 // go up until you hit the end of the puzzle or black sqaure, then go down, simple
 const getWord = (cw, row, col, isRowWord) => {
   // where we are will always be a , but just to be sure
-  let currWord = cw[row][col][0];
+  let currWord = cw[row][col];
 
   // "above"
   let i = isRowWord ? col - 1 : row - 1;
   while (i >= 0) {
-    if (cw[isRowWord ? row : i][isRowWord ? i : col][0] === "_") {
+    if (cw[isRowWord ? row : i][isRowWord ? i : col] === "_") {
       break;
     }
-    currWord = cw[isRowWord ? row : i][isRowWord ? i : col][0] + currWord;
+    currWord = cw[isRowWord ? row : i][isRowWord ? i : col] + currWord;
     i--;
   }
   let startIdx = i + 1;
@@ -164,10 +164,10 @@ const getWord = (cw, row, col, isRowWord) => {
   i = isRowWord ? col + 1 : row + 1;
   // row lengths will all be the same, so could use 0 instead of row
   while (isRowWord ? i < cw[row].length : i < cw.length) {
-    if (cw[isRowWord ? row : i][isRowWord ? i : col][0] === "_") {
+    if (cw[isRowWord ? row : i][isRowWord ? i : col] === "_") {
       break;
     }
-    currWord = currWord + cw[isRowWord ? row : i][isRowWord ? i : col][0];
+    currWord = currWord + cw[isRowWord ? row : i][isRowWord ? i : col];
     i++;
   }
   let endIdx = i - 1;
