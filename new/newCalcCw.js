@@ -21,125 +21,119 @@ function shuffle(array) {
 
 // outerCreateCw(null, commontrie);
 
-// todo - put other functions inside this so we can have global variables
 const outerCreateCw = (grid, trie) => {
+  ////////
+  const createCw = (cw, row, col) => {
+    let trie = commontrie;
+    // done
+    if (row === cw.length) {
+      return true;
+    }
+
+    // get next row, checks if we are at the end of a row
+    let nextRow = col == cw[row].length - 1 ? row + 1 : row;
+    // same for col
+    let nextCol = col == cw[row].length - 1 ? 0 : col + 1;
+
+    // if locked letter or black square, nothing to do but continue
+    // TODO might have to check if it is all still possible if it is a locked one, but I doubt it
+    if (cw[row][col] !== "," || cw[row][col] === "_") {
+      if (createCw(cw, nextRow, nextCol)) {
+        return true;
+      } else {
+        // want to backtrack here - skip the rest
+        return false;
+      }
+    }
+
+    // now we have the current word
+    // note: there should never be a case where it is something like a,,here,,b
+    // there should never be blank spaces in the word before where we are
+    // also, if we back track we should never need to recompute this
+
+    // now, to find the tries for row and col
+    let { word: rowWord, startIdx: rowWordStartIdx } = getWord(
+      cw,
+      row,
+      col,
+      true
+    );
+    let rowWordTrie = JSON.parse(JSON.stringify(trie[rowWord.length]));
+    // dont need this
+    if (rowWordStartIdx !== col) {
+      for (let i = rowWordStartIdx; i < col; i++) {
+        rowWordTrie = rowWordTrie[rowWord[i - rowWordStartIdx]];
+      }
+    }
+    // get the rest of the word to filter the trie down to what is possible with the givens left in the word
+    rowWord = rowWord.slice(col - rowWordStartIdx);
+    // call the function to filter down the trie
+    // dont need this if TODO test
+    if (rowWord.length !== 1) {
+      filterTrie(rowWordTrie, rowWord);
+      // throw away return??
+    }
+    let rowTopLevel = Object.keys(rowWordTrie);
+
+    // col
+    // TODO make this and above a function
+    let { word: colWord, startIdx: colWordStartIdx } = getWord(
+      cw,
+      row,
+      col,
+      false
+    );
+    let colWordTrie = JSON.parse(JSON.stringify(trie[colWord.length]));
+    // this means theres letters before in the word, they will all be letters, need to compute trie
+    // TODO don't even need this if statement
+    if (colWordStartIdx !== row) {
+      for (let i = colWordStartIdx; i < row; i++) {
+        colWordTrie = colWordTrie[colWord[i - colWordStartIdx]];
+      }
+    }
+    // same as above
+    colWord = colWord.slice(row - colWordStartIdx);
+    // dont need
+    if (colWord.length !== 1) {
+      filterTrie(colWordTrie, colWord);
+    }
+    let colTopLevel = Object.keys(colWordTrie);
+
+    let topLevel = colTopLevel.filter((letter) => rowTopLevel.includes(letter));
+
+    // to here
+    // let allTopLevel = new Set(rowTopLevel.concat(colTopLevel));
+    // if it is an empty set, then it is not possible, need to backtrack
+    // todo I don't think this means it is never possible, but it is funky - previously entered things effect the trie - so no
+    // think this is right but weird
+    if (topLevel.length === 0) {
+      return false;
+    }
+    // todo shuffle
+    // now we have a set of possible letters, can do old normal backtrack fill
+    // console.log([...allTopLevel]);
+    // let allTopLevelArr = [...allTopLevel];
+    shuffle(topLevel);
+    for (let i = 0; i < topLevel.length; i++) {
+      let letter = topLevel[i];
+      cw[row][col] = letter;
+      // todo need to implement check duplicates
+      if (createCw(cw, nextRow, nextCol)) {
+        return true;
+      }
+    }
+
+    cw[row][col] = ",";
+    return false;
+  };
   // _ is black square
   // , is empty
   // letters are lettes
-  // grid is cw of tuples with letter, isLocked
-  // isLocked means user entered so can't change
-  //let cw = grid;
   console.log("starting");
   let cw = grid;
 
   createCw(cw, 0, 0);
   return cw;
-};
-
-// TODO - I don't think I actually need the locks, can just see if there is already a letter there
-// TODO - also don't think I need to pass around trie anymore because we need to check at beginning of each time
-const createCw = (cw, row, col) => {
-  let trie = commontrie;
-  // done
-  if (row === cw.length) {
-    return true;
-  }
-
-  // get next row, checks if we are at the end of a row
-  let nextRow = col == cw[row].length - 1 ? row + 1 : row;
-  // same for col
-  let nextCol = col == cw[row].length - 1 ? 0 : col + 1;
-
-  // if locked letter or black square, nothing to do but continue
-  // TODO might have to check if it is all still possible if it is a locked one, but I doubt it
-  if (cw[row][col] !== "," || cw[row][col] === "_") {
-    if (createCw(cw, nextRow, nextCol)) {
-      return true;
-    } else {
-      // want to backtrack here - skip the rest
-      return false;
-    }
-  }
-
-  // now we have the current word
-  // note: there should never be a case where it is something like a,,here,,b
-  // there should never be blank spaces in the word before where we are
-  // also, if we back track we should never need to recompute this
-
-  // now, to find the tries for row and col
-  let { word: rowWord, startIdx: rowWordStartIdx } = getWord(
-    cw,
-    row,
-    col,
-    true
-  );
-  let rowWordTrie = JSON.parse(JSON.stringify(trie[rowWord.length]));
-  // dont need this
-  if (rowWordStartIdx !== col) {
-    for (let i = rowWordStartIdx; i < col; i++) {
-      rowWordTrie = rowWordTrie[rowWord[i - rowWordStartIdx]];
-    }
-  }
-  // get the rest of the word to filter the trie down to what is possible with the givens left in the word
-  rowWord = rowWord.slice(col - rowWordStartIdx);
-  // call the function to filter down the trie
-  // dont need this if TODO test
-  if (rowWord.length !== 1) {
-    filterTrie(rowWordTrie, rowWord);
-    // throw away return??
-  }
-  let rowTopLevel = Object.keys(rowWordTrie);
-
-  // col
-  // TODO make this and above a function
-  let { word: colWord, startIdx: colWordStartIdx } = getWord(
-    cw,
-    row,
-    col,
-    false
-  );
-  let colWordTrie = JSON.parse(JSON.stringify(trie[colWord.length]));
-  // this means theres letters before in the word, they will all be letters, need to compute trie
-  // TODO don't even need this if statement
-  if (colWordStartIdx !== row) {
-    for (let i = colWordStartIdx; i < row; i++) {
-      colWordTrie = colWordTrie[colWord[i - colWordStartIdx]];
-    }
-  }
-  // same as above
-  colWord = colWord.slice(row - colWordStartIdx);
-  // dont need
-  if (colWord.length !== 1) {
-    filterTrie(colWordTrie, colWord);
-  }
-  let colTopLevel = Object.keys(colWordTrie);
-
-  let topLevel = colTopLevel.filter((letter) => rowTopLevel.includes(letter));
-
-  // to here
-  // let allTopLevel = new Set(rowTopLevel.concat(colTopLevel));
-  // if it is an empty set, then it is not possible, need to backtrack
-  // todo I don't think this means it is never possible, but it is funky - previously entered things effect the trie - so no
-  // think this is right but weird
-  if (topLevel.length === 0) {
-    return false;
-  }
-  // todo shuffle
-  // now we have a set of possible letters, can do old normal backtrack fill
-  // console.log([...allTopLevel]);
-  // let allTopLevelArr = [...allTopLevel];
-  shuffle(topLevel);
-  for (let i = 0; i < topLevel.length; i++) {
-    let letter = topLevel[i];
-    cw[row][col] = letter;
-    // todo need to implement check duplicates
-    if (createCw(cw, nextRow, nextCol)) {
-      return true;
-    }
-  }
-
-  cw[row][col] = ",";
-  return false;
 };
 
 // get word from positon for row or column
